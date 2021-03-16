@@ -25,13 +25,14 @@ int main(int argc, char *argv[]) {
   unsigned int t, last_t; /* in frames */
 
   char	*input_wav, *output_vad, *output_wav;
-
-  DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");
+  unsigned int number_init;
+  DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0"); //los campos son cadenas de texto
 
   verbose    = args.verbose ? DEBUG_VAD : 0;
   input_wav  = args.input_wav;
   output_vad = args.output_vad;
   output_wav = args.output_wav;
+  number_init= atoi(args.number_init);
 
   if (input_wav == 0 || output_vad == 0) {
     fprintf(stderr, "%s\n", args.usage_pattern);
@@ -63,7 +64,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  vad_data = vad_open(sf_info.samplerate);
+  vad_data = vad_open(sf_info.samplerate,number_init);
   /* Allocate memory for buffers */
   frame_size   = vad_frame_size(vad_data);
   buffer       = (float *) malloc(frame_size * sizeof(float));
