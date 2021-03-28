@@ -112,9 +112,15 @@ Ejercicios
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 
+		- 6 dB
+
 	* Duración mínima razonable de los segmentos de voz y silencio.
 
+		- Menos de 0,5s. 
+
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
+
+		- Indican cambios bruscos de nivel de potencia
 
 
 ### Desarrollo del detector de actividad vocal
