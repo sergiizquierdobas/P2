@@ -65,7 +65,10 @@ VAD_DATA * vad_open(float rate, int number_init) {
   vad_data->counter_N=number_init;
   vad_data->counterinit=0;
   vad_data->p0=0;
-  
+  vad_data->maybesilencecounter=0;
+  vad_data->maybevoicecounter=0;
+  vad_data->silencecounter=0;
+  vad_data->voicecounter=0;
 
   return vad_data;
 }
@@ -115,19 +118,57 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     break;
 
   case ST_SILENCE:
+    vad_data->silencecounter++;
+    vad_data->voicecounter=0;
     if (f.p > vad_data->k0)
-      vad_data->state = ST_VOICE;
+      vad_data->state = ST_MAYBEVOICE;
     break;
 
   case ST_VOICE:
+    vad_data->silencecounter=0;
+    vad_data->voicecounter++;
     if (f.p < vad_data->k0)
-      vad_data->state = ST_SILENCE;
+      vad_data->state = ST_MAYBESILENCE;
     break;
 
   case ST_MAYBESILENCE:
     
+    if(f.p < vad_data->k0 &&  vad_data->maybesilencecounter < 3){
+      vad_data->maybesilencecounter++;
+      vad_data->state = ST_MAYBESILENCE;
+    }
+
+    else if(f.p < vad_data->k0 &&  vad_data->maybesilencecounter == 3){
+      vad_data->maybesilencecounter=0;
+      vad_data->silencecounter=vad_data->silencecounter+3;
+      vad_data->state = ST_SILENCE;
+    }
+
+    else{
+      vad_data->silencecounter=0;
+      vad_data->voicecounter=vad_data->voicecounter+vad_data->maybesilencecounter;
+      vad_data->state = ST_VOICE;
+    }
     break;
-  case ST_MAYBENOISE:
+
+  case ST_MAYBEVOICE:
+
+    if(f.p > vad_data->k0 &&  vad_data->maybevoicecounter < 3){
+      vad_data->maybevoicecounter++;
+      vad_data->state = ST_MAYBEVOICE;
+    }
+
+    else if(f.p > vad_data->k0 &&  vad_data->maybevoicecounter == 3){
+      vad_data->maybevoicecounter=0;
+      vad_data->voicecounter=vad_data->voicecounter+3;
+      vad_data->state = ST_VOICE;
+    }
+
+    else{
+      vad_data->voicecounter=0;
+      vad_data->silencecounter=vad_data->silencecounter+vad_data->maybevoicecounter++;
+      vad_data->state = ST_SILENCE;
+    }
 
     break;
 
@@ -135,11 +176,13 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     break;
   }
 
-  if (vad_data->state == ST_SILENCE ||
+  return vad_data->state;
+  /*if (vad_data->state == ST_SILENCE ||
       vad_data->state == ST_VOICE)
     return vad_data->state;
   else
     return ST_SILENCE;
+    */
 }
 
 void vad_show_state(const VAD_DATA *vad_data, FILE *out) {

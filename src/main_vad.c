@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
   int n_read = 0, i;
 
   VAD_DATA *vad_data;
-  VAD_STATE state, last_state;
+  VAD_STATE state, last_state, last_v_state=ST_SILENCE;
 
   float *buffer, *buffer_zeros;
   int frame_size;         /* in samples */
@@ -89,9 +89,13 @@ int main(int argc, char *argv[]) {
     /* As it is, it prints UNDEF segments but is should be merge to the proper value */
     if (state != last_state) {
       if (t != last_t)
-        fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration, state2str(last_state));
+        if((last_state != state) && (state == ST_VOICE || state == ST_SILENCE) && (last_state == ST_MAYBEVOICE || last_state == ST_MAYBESILENCE)){
+          fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration, state2str(last_v_state));
+          last_v_state=state;
+          last_t = t-1;
+          
+        }
       last_state = state;
-      last_t = t;
     }
 
     if (sndfile_out != 0) {
