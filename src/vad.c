@@ -15,7 +15,7 @@ const float FRAME_TIME = 10.0F; /* in ms. */
  */
 
 const char *state_str[] = {
-  "UNDEF", "S", "V", "INIT"
+  "UNDEF", "S", "V", "MS", "MV", "INIT"
 };
 
 const char *state2str(VAD_STATE st) {
@@ -67,8 +67,8 @@ VAD_DATA * vad_open(float rate, int number_init) {
   vad_data->p0=0;
   vad_data->maybesilencecounter=0;
   vad_data->maybevoicecounter=0;
-  vad_data->silencecounter=0;
-  vad_data->voicecounter=0;
+  //vad_data->silencecounter=0;
+  //vad_data->voicecounter=0;
 
   return vad_data;
 }
@@ -77,6 +77,16 @@ VAD_STATE vad_close(VAD_DATA *vad_data) {
   /* 
    * TODO: decide what to do with the last undecided frames
    */
+  //Venimos de voice, asi que nos quedamos en voice
+  if (vad_data->state==ST_MS){
+    vad_data->state=ST_VOICE;
+  }
+
+   //Venimos de silence, asi que nos quedamos en silence
+  if (vad_data->state==ST_MV){
+    vad_data->state=ST_SILENCE;
+  }
+
   VAD_STATE state = vad_data->state;
 
   free(vad_data);
@@ -118,71 +128,60 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     break;
 
   case ST_SILENCE:
-    vad_data->silencecounter++;
-    vad_data->voicecounter=0;
+    //vad_data->silencecounter++;
+    //vad_data->voicecounter=0;
     if (f.p > vad_data->k0)
-      vad_data->state = ST_MAYBEVOICE;
+      vad_data->state = ST_MV;
     break;
 
   case ST_VOICE:
-    vad_data->silencecounter=0;
-    vad_data->voicecounter++;
+    //vad_data->silencecounter=0;
+    //vad_data->voicecounter++;
     if (f.p < vad_data->k0)
-      vad_data->state = ST_MAYBESILENCE;
+      vad_data->state = ST_MS;
     break;
 
-  case ST_MAYBESILENCE:
+  case ST_MS:
     
-    if(f.p < vad_data->k0 &&  vad_data->maybesilencecounter < 3){
-      vad_data->maybesilencecounter++;
-      vad_data->state = ST_MAYBESILENCE;
+    if(f.p < vad_data->k0){
+      if(vad_data->maybevoicecounter >= 3){
+        vad_data->state =ST_SILENCE;
+        vad_data->maybesilencecounter=0;
+      }
     }
-
-    else if(f.p < vad_data->k0 &&  vad_data->maybesilencecounter == 3){
+    if(f.p>vad_data->k0){
       vad_data->maybesilencecounter=0;
-      vad_data->silencecounter=vad_data->silencecounter+3;
-      vad_data->state = ST_SILENCE;
+      vad_data->state =ST_VOICE;
     }
-
-    else{
-      vad_data->silencecounter=0;
-      vad_data->voicecounter=vad_data->voicecounter+vad_data->maybesilencecounter;
-      vad_data->state = ST_VOICE;
-    }
+    vad_data->maybesilencecounter++;  
     break;
 
-  case ST_MAYBEVOICE:
-
-    if(f.p > vad_data->k0 &&  vad_data->maybevoicecounter < 3){
-      vad_data->maybevoicecounter++;
-      vad_data->state = ST_MAYBEVOICE;
+  case ST_MV:
+  
+    if(f.p > vad_data->k0){
+      if(vad_data->maybevoicecounter >= 3){
+        vad_data->state =ST_VOICE;
+        vad_data->maybevoicecounter=0;
+      }
     }
-
-    else if(f.p > vad_data->k0 &&  vad_data->maybevoicecounter == 3){
+    if(f.p<vad_data->k0){
       vad_data->maybevoicecounter=0;
-      vad_data->voicecounter=vad_data->voicecounter+3;
-      vad_data->state = ST_VOICE;
+      vad_data->state =ST_SILENCE;
     }
-
-    else{
-      vad_data->voicecounter=0;
-      vad_data->silencecounter=vad_data->silencecounter+vad_data->maybevoicecounter++;
-      vad_data->state = ST_SILENCE;
-    }
-
+    vad_data->maybevoicecounter++;
     break;
 
   case ST_UNDEF:
     break;
   }
-
-  return vad_data->state;
-  /*if (vad_data->state == ST_SILENCE ||
-      vad_data->state == ST_VOICE)
+    
+  if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE|| vad_data->state == ST_MV || vad_data->state == ST_MS)
     return vad_data->state;
-  else
-    return ST_SILENCE;
-    */
+  else if(vad_data->state == ST_INIT){
+      return ST_SILENCE;
+  }
+    return ST_UNDEF;
+    
 }
 
 void vad_show_state(const VAD_DATA *vad_data, FILE *out) {
