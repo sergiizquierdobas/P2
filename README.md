@@ -167,3 +167,4 @@ Ejercicios
 Recuerde comprobar que el repositorio cuenta con los códigos correctos y en condiciones de ser 
 correctamente compilados con la orden `meson bin; ninja -C bin`. El programa generado (`bin/vad`) será
 el usado, sin más opciones, para realizar la evaluación *ciega* del sistema.
+# P2nofunciona
