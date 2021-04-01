@@ -17,14 +17,12 @@ typedef struct {
   unsigned int frame_length;
   float last_feature; /* for debuggin purposes */
   float p0;
-   float k0;
-   float alpha;
+   float k0,k1,k2;
+   float alpha, margen1, histeresis;
    unsigned int counterinit;
    unsigned int counter_N;
    unsigned int maybesilencecounter;
    unsigned int maybevoicecounter;
-   unsigned int voicecounter;
-   unsigned int silencecounter;
 
 } VAD_DATA;
 
