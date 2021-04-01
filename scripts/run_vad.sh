@@ -4,7 +4,7 @@
 # Use the nautilus explorer or chmod +x run_vad.sh
 for num_init in $(seq 1 1 5); do
 # Write here the name and path of your program and database
-DB=/Users/giselaflotatsboix/PAV/P2/db.v4
+DB=/home/sergi/PAV/P2/db.v4
 CMD="bin/vad -N $num_init"
 
 for filewav in $DB/*/*wav; do

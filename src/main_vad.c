@@ -76,9 +76,8 @@ int main(int argc, char *argv[]) {
 
   for (t = last_t = 0; ; t++) { /* For each frame ... */
     /* End loop when file has finished (or there is an error) */
-    if  ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size) {
-      break;
-    }
+    if  ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size) break;
+
     if (sndfile_out != 0) {
       /* TODO: copy all the samples into sndfile_out */
     }
@@ -91,11 +90,10 @@ int main(int argc, char *argv[]) {
     if (state != last_state) {
       if (t != last_t){
         if((initial_state!=state) && (state==ST_VOICE || state==ST_SILENCE) && (last_state==ST_MV || last_state==ST_MS)){
-          fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration, state2str(initial_state));
-          initial_state = state;
-          last_t = t;
+          fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration, state2str(last_state));
+          last_state = state;
+          last_t = t-1;
         }
-        last_state = state; 
       }
     }
 
