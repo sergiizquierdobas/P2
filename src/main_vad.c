@@ -76,8 +76,9 @@ int main(int argc, char *argv[]) {
 
   for (t = last_t = 0; ; t++) { /* For each frame ... */
     /* End loop when file has finished (or there is an error) */
-    if  ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size) break;
-
+    if  ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size) {
+      break;
+    }
     if (sndfile_out != 0) {
       /* TODO: copy all the samples into sndfile_out */
     }
