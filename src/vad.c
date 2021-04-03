@@ -177,9 +177,9 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     break;
   }
     
-  if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE|| vad_data->state == ST_MV || vad_data->state == ST_MS)
-    return vad_data->state;
-  else if(vad_data->state == ST_INIT){
+  if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE|| vad_data->state == ST_MV || vad_data->state == ST_MS){
+    return vad_data->state;  
+  } else if(vad_data->state == ST_INIT){
       return ST_SILENCE;
   }
     return ST_UNDEF;

@@ -304,7 +304,7 @@ int elems_to_args(Elements *elements, DocoptArgs *args, bool help,
 
 DocoptArgs docopt(int argc, char *argv[], bool help, const char *version) {
     DocoptArgs args = {
-        0, 0, 0, NULL, NULL, NULL, NULL,
+        0, 0, 0, NULL, (char*) "10", NULL, NULL,
         usage_pattern, help_message
     };
     Tokens ts;
