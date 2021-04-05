@@ -112,16 +112,15 @@ Ejercicios
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 
-		- 6 dB
+		- Fixant-nos en la poténcia del senyal veiem que el nivell de poténcia que tenim quan no hi ha veu és d'aproximadament menor a 5dB, a més tenint en compt els moments en que son pauses de la veu; és a dir, espais entre paraules, on la poténcia és aproximadament de entre 20dB i 30dB, podem dir que el increment de nivell de potència respecte al nivell de silenci inicial podria ser de 20dB.
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
 
-		- Menos de 0,5s. 
+		- Analitzant el obtingut mitjançant wavesurfer, podem dir que la duració mínima de segments de veu i de silenci són aproximadament iguals de 200ms
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 
-		- Indican cambios bruscos de nivel de potencia
-
+		- Veiem clarament com en els moments en que hi ha silenci, el valor de ZCR es dispara, ho podem apreciar clarament sobretot en el segon 2,5, mentre que quan hi ha veu aquest valor s'estabilitza.
 
 ### Desarrollo del detector de actividad vocal
 
@@ -130,7 +129,6 @@ Ejercicios
 
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
-
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
