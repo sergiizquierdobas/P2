@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
   SF_INFO sf_info;
   FILE *vadfile;
   int n_read = 0, i;
+  int n_w = 0; 
 
   VAD_DATA *vad_data;
   VAD_STATE state, last_state, initial_state=ST_SILENCE;
@@ -81,7 +82,7 @@ int main(int argc, char *argv[]) {
 
     if (sndfile_out != 0) {
       /* TODO: copy all the samples into sndfile_out */
-          sf_write_float(sndfile_out, buffer, frame_size);
+          // sf_write_float(sndfile_out, buffer, frame_size);
     }
 
     state = vad(vad_data, buffer);
@@ -97,13 +98,18 @@ int main(int argc, char *argv[]) {
           initial_state = state;
           last_t = t-1;
         }
-        last_state = state; 
       }
     }
 
     if (sndfile_out != 0) {
       /* TODO: go back and write zeros in silence segments */
+      if(last_state ==ST_SILENCE){
+        n_w=sf_write_float(sndfile_out,buffer_zeros,frame_size);
+      } else {
+        n_w=sf_write_float(sndfile_out, buffer, frame_size); 
+      }
     }
+    last_state = state;  
   }
 
   state = vad_close(vad_data);
