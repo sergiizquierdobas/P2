@@ -145,6 +145,9 @@ Ejercicios
   la que se vea con claridad la señal antes y después de la cancelación (puede que `wavesurfer` no sea la
   mejor opción para esto, ya que no es capaz de visualizar varias señales al mismo tiempo).
 
+  - Hem desenvolupat un algoritme amb el qual hem creat un fitxer de sortida (pav_2301_02ampli.wav) en el qual es pot observar clarament, com veurem en la imatge inferior en el tros marcat de color taronja entre els segons 8.2 i 8.4, que els trossos on trobem silenci sobreescrivim l'amplitud de la nova senyal a 0, per tal de cancel·lar totalment el soroll d'aquest tros de senyal. 
+  <img src = 'https://github.com/sergiizquierdobas/P2/blob/flotats-izquierdo/PAV_2302_01ampli.png'>
+
 #### Gestión de las opciones del programa usando `docopt_c`
 
 - Si ha usado `docopt_c` para realizar la gestión de las opciones y argumentos del programa `vad`, inserte
