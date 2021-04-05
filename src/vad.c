@@ -77,6 +77,7 @@ VAD_STATE vad_close(VAD_DATA *vad_data) {
   /* 
    * TODO: decide what to do with the last undecided frames
    */
+  
   //Venimos de voice, asi que nos quedamos en voice
   if (vad_data->state==ST_MS){
     vad_data->state=ST_VOICE;
@@ -86,7 +87,7 @@ VAD_STATE vad_close(VAD_DATA *vad_data) {
   if (vad_data->state==ST_MV){
     vad_data->state=ST_SILENCE;
   }
-
+  
   VAD_STATE state = vad_data->state;
 
   free(vad_data);
@@ -116,15 +117,15 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
   case ST_INIT:
     if(vad_data->counterinit<vad_data->counter_N){
       vad_data->counterinit++;
-      vad_data->p0 = vad_data->p0 + pow(10, vad_data->last_feature/10);
+      vad_data->p0 = vad_data->p0 + pow(10, f.p/10);
 
     } else{
 
       vad_data->k0=10*log10(vad_data->p0/vad_data->counter_N);
       // vad_data->k0=vad_data->p0 + vad_data->alpha;
-      vad_data->margen1=-0.1*vad_data->k0+2;
+      vad_data->margen1=-0.075*vad_data->k0+2;
       vad_data->k1= vad_data->k0+vad_data->margen1;
-      vad_data->histeresis=-0.04*vad_data->margen1+2;
+      vad_data->histeresis=-0.035*vad_data->margen1+1.8;
       vad_data->k2 = vad_data->histeresis + vad_data->k1; 
       vad_data->state= ST_SILENCE;
     
@@ -150,7 +151,7 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     if(vad_data->maybesilencecounter < 3){
         vad_data->maybesilencecounter++;
     } else {
-      if (f.p < vad_data->k2){
+      if (f.p < vad_data->k1){
         vad_data->state =ST_SILENCE;
       } else {
       vad_data->state =ST_VOICE;
@@ -162,10 +163,10 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     if(vad_data->maybevoicecounter < 3){
         vad_data->maybevoicecounter++;
     } else{
-      if (f.p < vad_data->k1 ){
-        vad_data->state =ST_SILENCE;
-      } else {
+      if (f.p > vad_data->k2 ){
         vad_data->state =ST_VOICE;
+      } else {
+        vad_data->state =ST_SILENCE;
       }
     }
     break;
@@ -176,10 +177,9 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     
   if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE|| vad_data->state == ST_MV || vad_data->state == ST_MS){
     return vad_data->state;  
-  } else if(vad_data->state == ST_INIT){
-      return ST_SILENCE;
+  } else {
+     return ST_UNDEF;
   }
-    return ST_UNDEF;
     
 }
 

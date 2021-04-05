@@ -5,7 +5,6 @@
 
 #include "vad.h"
 #include "vad_docopt.h"
-#include "pav_analysis.h"
 
 #define DEBUG_VAD 0x1
 
@@ -94,10 +93,11 @@ int main(int argc, char *argv[]) {
     if (state != last_state) {
       if (t != last_t){
         if((initial_state!=state) && (state==ST_VOICE || state==ST_SILENCE) && (last_state==ST_MV || last_state==ST_MS)){
-          fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, (t-1)* frame_duration, state2str(last_state));
+          fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, (t-1)* frame_duration, state2str(initial_state));
           initial_state = state;
           last_t = t-1;
         }
+        last_state = state; 
       }
     }
 
