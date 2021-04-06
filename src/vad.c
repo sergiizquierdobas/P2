@@ -123,7 +123,7 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
 
       vad_data->k0=10*log10(vad_data->p0/vad_data->counter_N);
       // vad_data->k0=vad_data->p0 + vad_data->alpha;
-      vad_data->margen1=-0.075*vad_data->k0+2;
+      vad_data->margen1=-0.065*vad_data->k0+2.25;
       vad_data->k1= vad_data->k0+vad_data->margen1;
       vad_data->histeresis=-0.035*vad_data->margen1+1.8;
       vad_data->k2 = vad_data->histeresis + vad_data->k1; 
