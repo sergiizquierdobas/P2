@@ -117,6 +117,7 @@ int main(int argc, char *argv[]) {
   if (t != last_t){
     fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration + n_read / (float) sf_info.samplerate, state2str(ST_SILENCE));
   }
+  
   /* clean up: free memory, close open files */
   free(buffer);
   free(buffer_zeros);

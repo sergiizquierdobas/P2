@@ -130,11 +130,17 @@ Ejercicios
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 
+  <img src='https://github.com/sergiizquierdobas/P2/blob/flotats-izquierdo/ComparatiuVadLab.png'>
+
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
+
+	- Les discrepàncies més grans que trobem entre l'etiquetat manual i la detecció automàtica és que en moments en que encara estem parlant però hi ha son sords alguna vegada ho confón amb un silenci. A més a més hi ha un petit retard entre l'etiquetat manual i l'automàtic que encara repercuteix una mica més al resultat final.
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+
+  <img src ="https://github.com/sergiizquierdobas/P2/blob/flotats-izquierdo/ResultatsFinals.png">
 
 
 ### Trabajos de ampliación

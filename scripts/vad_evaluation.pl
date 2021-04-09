@@ -48,6 +48,7 @@ sub read_lab {
     return @data;
 }
 
+
 # Print two lines; used for debuggin purposes
 #sub show_items {
 #    my $i = shift;

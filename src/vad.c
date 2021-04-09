@@ -33,6 +33,7 @@ typedef struct {
  * TODO: Delete and use your own features!
  */
 
+
 Features compute_features(const float *x, int N) {
   /*
    * Input: x[i] : i=0 .... N-1 
